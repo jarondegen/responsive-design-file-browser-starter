@@ -1,5 +1,31 @@
 # File Browser
+Completed as part of the App Academy curriculum. Implementation by Jaron Degen and Juliet Shafto.
 
+## Project Overview
+Build an interactive file browser using JavaScript and CSS.
+
+## Project Status
+- Initial Load
+  - [ ] Fetching initial data
+  - [ ] Populating the UI tree
+  - [ ] Icons
+  - [ ] Fetch files
+- Opening a directory
+  - [ ] Handling the click
+  - [ ] Knowing that path
+  - [ ] Making the call
+  - [ ] Handling the return data
+  - [ ] Updating the HTML
+- Closing a directory
+  - [ ] Deleting nodes
+  - [ ] Hiding nodes
+- Handling files
+  - [ ] Opening a file
+  - [ ] Moving a file
+- Media queries
+  - [ ] Handling small screens
+
+## Project Description
 Now, it's time to take your knowledge one step further. You're going to marry
 your knowledge of layout with your knowledge of asynchronous programming and
 data structures to interact with a server that shows you the contents of files
