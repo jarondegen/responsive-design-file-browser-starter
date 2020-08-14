@@ -11,11 +11,11 @@ Build an interactive file browser using JavaScript and CSS.
   - [x] Icons
   - [x] Fetch files
 - Opening a directory
-  - [ ] Handling the click
-  - [ ] Knowing that path
-  - [ ] Making the call
-  - [ ] Handling the return data
-  - [ ] Updating the HTML
+  - [x] Handling the click
+  - [x] Knowing that path
+  - [x] Making the call
+  - [x] Handling the return data
+  - [x] Updating the HTML
 - Closing a directory
   - [ ] Deleting nodes
   - [ ] Hiding nodes

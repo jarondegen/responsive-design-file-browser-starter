@@ -23,17 +23,48 @@ class DirectoryTreeNode {
     }
 
     addChild(child) {
+        child.parent = this;
         this.children.push(child);
     }
+
+    getFullPath() {
+      // Special case for the root node with no name
+      if (this.name === undefined) {
+        return '';
+      }
+    
+      let parentPath = '';
+      if (this.parent !== undefined) {
+        parentPath = this.parent.getFullPath();
+      }
+      return `${parentPath}/${this.name}`;
+    }
+    
+    findChild(path) {
+        if (path === "") return this;
+        let pathArray = path.split("/");
+        if (pathArray[0]==="") pathArray.shift();
+        let target;
+        this.children.forEach(child => {
+            if (child.name === pathArray[0]) {
+                target = child;
+            }
+        });
+        let newPath = pathArray.slice(1).join("/");
+        return target.findChild(newPath);
+    }
 }
-let root = new DirectoryTreeNode('root', 'directory')
+let root = new DirectoryTreeNode()
 
 function updateVisualTree(element, directoryTreeNode) {
 
     // Create an unordered list to make a UI for the directoryTreeNode
     const ul = document.createElement('ul');
     ul.classList.add('tree');
-  
+    if (directoryTreeNode.parent) ul.classList.add('tree--nested')
+    
+    // if directoryTreeNode has a parent, also add 'tree--nested class'
+
     // Create a list element for every child of the directoryTreeNode
     for (let child of directoryTreeNode.children) {
       updateVisualTreeEntry(ul, child);
@@ -44,13 +75,14 @@ function updateVisualTree(element, directoryTreeNode) {
   }
   
   function updateVisualTreeEntry(treeElement, child) {
+    // make sure to add data attribute with full path
     const li = document.createElement('li');
       li.classList.add('tree-entry');
-  
+      li.dataset.pathName = child.getFullPath();
       // Create a list element with a file icon
       if (child.type === 'file') {
         li.innerHTML = `
-          <div class="tree-entry__disclosure tree-entry__disclosure--disabled></div>
+          <div class="tree-entry__disclosure tree-entry__disclosure--disabled"></div>
           <img class="tree-entry__icon" src="/icons/file_type_${child.getIconTypeName()}.svg">
           <div class="tree-entry__name">${child.name}</div>
           <div class="tree-entry__time">${child.lastModifiedTime}</div>
@@ -88,6 +120,7 @@ window.addEventListener('DOMContentLoaded', event => {
         })
         .then(res => {
             updateVisualTree(filetree, root)
+            console.log('what')
         })
         .catch(err => {
             overlay.classList.add('overlay--error')
@@ -95,56 +128,37 @@ window.addEventListener('DOMContentLoaded', event => {
                 .innerHTML = "Uh Oh! Try Again";
             
         })
-        
-    })
-
-// function updateDom(root,) {
-//     let filetree = document.querySelector('.filetree');
-//     let left = document.querySelector('.filetree___type');
-//     let right = document.querySelector('.filetree__date');
     
-//     root.children.forEach(child => {
-//         let leftEl = document.createElement('div')
-//     })
-// }
-function updateVisualTree(element, directoryTreeNode) {
+    filetree.addEventListener("click", (e) => {
+        if (e.target.classList.contains('tree-entry__disclosure--closed')) {
+          e.target.classList.toggle('tree-entry__disclosure--open')
+          e.target.classList.toggle('tree-entry__disclosure--closed')
+          let parent = e.target.parentElement;
+          let path = parent.dataset.pathName;
 
-  // Create an unordered list to make a UI for the directoryTreeNode
-  const ul = document.createElement('ul');
-  ul.classList.add('tree');
+          fetch(`http://localhost:3001/api/path${path}`)
+          .then(res => {
+            if (!res.ok) throw new Error();
+            console.log(res)
+            return res.json();
+          }).then(res => {
+              let parentNode = root.findChild(path);
+              res.forEach(el => {
+                let node = new DirectoryTreeNode(el.name, el.type, el.lastModifiedTime);
+                parentNode.addChild(node);
+              });
+              updateVisualTree(parent, parentNode);
+          });
 
-  // Create a list element for every child of the directoryTreeNode
-  for (let child of directoryTreeNode.children) {
-    updateVisualTreeEntry(ul, child);
-  }
 
-  // Update the tree with the newly created unordered list.
-  element.appendChild(ul);
-}
+        }else if (e.target.classList.contains('tree-entry__disclosure--open')) {
+          e.target.classList.toggle('tree-entry__disclosure--open')
+          e.target.classList.toggle('tree-entry__disclosure--closed')
+        }
+    });
+    
+    //figure out how we are going to fetch
+    //add logic to add opened class to first div when it has been clicked
+    //add the correct icon to the openned class in CSS
+});
 
-function updateVisualTreeEntry(treeElement, child) {
-  const li = document.createElement('li');
-    li.classList.add('tree-entry');
-
-    // Create a list element with a file icon
-    if (child.type === 'file') {
-      li.innerHTML = `
-        <div class="tree-entry__disclosure tree-entry__disclosure--disabled"></div>
-        <img class="tree-entry__icon" src="/icons/file_type_${child.getIconTypeName()}.svg">
-        <div class="tree-entry__name">${child.name}</div>
-        <div class="tree-entry__time">${child.lastModifiedTime}</div>
-      `;
-
-    // Or create a list element with a folder icon
-    } else if (child.type === 'directory') {
-      li.innerHTML = `
-        <div class="tree-entry__disclosure tree-entry__disclosure--closed"></div>
-        <img class="tree-entry__icon" src="/icons/folder_type_${child.getIconTypeName()}.svg">
-        <div class="tree-entry__name">${child.name}</div>
-        <div class="tree-entry__time">${child.lastModifiedTime}</div>
-      `;
-    }
-
-    // Add the newly created list element into the unordered list
-    treeElement.appendChild(li);
-}

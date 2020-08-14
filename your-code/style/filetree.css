@@ -5,20 +5,22 @@
 }
 
 .tree {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+
 }
 
 .tree-entry__disclosure--closed::after {
     content: "\25B6";
 }
 
+.tree-entry__disclosure--open::after {
+    content: "\25BC";
+}
+
 .tree-entry {
     display: grid;
-    grid-template-columns: 50px 50px 2fr 1fr;
-    width: auto;
+    grid-template-columns: 30px 30px 1fr  auto;
     align-items: center;
+    grid-column-gap: 10px;
 }
 
 .tree-entry__disclosure {
@@ -32,6 +34,10 @@
     justify-self: center;
 }
 
-.tree-entry__time {
-   
+.tree--nested {
+    grid-column-start: 2;
+
+    grid-column-end: 5;
+
 }
+
