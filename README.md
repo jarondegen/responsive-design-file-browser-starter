@@ -6,10 +6,10 @@ Build an interactive file browser using JavaScript and CSS.
 
 ## Project Status
 - Initial Load
-  - [ ] Fetching initial data
-  - [ ] Populating the UI tree
-  - [ ] Icons
-  - [ ] Fetch files
+  - [x] Fetching initial data
+  - [x] Populating the UI tree
+  - [x] Icons
+  - [x] Fetch files
 - Opening a directory
   - [ ] Handling the click
   - [ ] Knowing that path

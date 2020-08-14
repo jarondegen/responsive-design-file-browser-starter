@@ -1,0 +1,37 @@
+.filetree {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.tree {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.tree-entry__disclosure--closed::after {
+    content: "\25B6";
+}
+
+.tree-entry {
+    display: grid;
+    grid-template-columns: 50px 50px 2fr 1fr;
+    width: auto;
+    align-items: center;
+}
+
+.tree-entry__disclosure {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tree-entry__icon {
+    width: 25px;
+    justify-self: center;
+}
+
+.tree-entry__time {
+   
+}
