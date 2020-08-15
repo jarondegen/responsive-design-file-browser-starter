@@ -17,8 +17,7 @@ Build an interactive file browser using JavaScript and CSS.
   - [x] Handling the return data
   - [x] Updating the HTML
 - Closing a directory
-  - [ ] Deleting nodes
-  - [ ] Hiding nodes
+  - [x] Hiding nodes
 - Handling files
   - [ ] Opening a file
   - [ ] Moving a file

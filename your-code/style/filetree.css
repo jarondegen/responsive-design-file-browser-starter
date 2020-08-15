@@ -40,4 +40,6 @@
     grid-column-end: 5;
 
 }
-
+.tree--hidden {
+    display: none;
+}

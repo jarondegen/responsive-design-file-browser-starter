@@ -135,6 +135,20 @@ window.addEventListener('DOMContentLoaded', event => {
           e.target.classList.toggle('tree-entry__disclosure--closed')
           let parent = e.target.parentElement;
           let path = parent.dataset.pathName;
+          let parentNode = root.findChild(path);
+
+          // before the fetch, check if the corresponding treenode has children
+          if (parentNode.children.length !== 0) {
+            // if it already has children, you don't need to do a fetch
+            // just search the html element for 
+            // children, and remove the tree--hidden class
+            for (node of parent.childNodes) {
+              if (!node.classList) continue; 
+              node.classList.remove('tree--hidden')
+            }
+            // then exit the function so that you don't perform an additional fetch
+            return;
+          }
 
           fetch(`http://localhost:3001/api/path${path}`)
           .then(res => {
@@ -142,7 +156,6 @@ window.addEventListener('DOMContentLoaded', event => {
             console.log(res)
             return res.json();
           }).then(res => {
-              let parentNode = root.findChild(path);
               res.forEach(el => {
                 let node = new DirectoryTreeNode(el.name, el.type, el.lastModifiedTime);
                 parentNode.addChild(node);
@@ -152,13 +165,22 @@ window.addEventListener('DOMContentLoaded', event => {
 
 
         }else if (e.target.classList.contains('tree-entry__disclosure--open')) {
-          e.target.classList.toggle('tree-entry__disclosure--open')
-          e.target.classList.toggle('tree-entry__disclosure--closed')
+          let parent = e.target.parentElement;
+          let path = parent.dataset.pathName;
+          e.target.classList.toggle('tree-entry__disclosure--open');
+          e.target.classList.toggle('tree-entry__disclosure--closed');
+
+          // check all the children, and if they are a tree--nested, add tree--hidden
+          for (node of parent.childNodes) {
+            if (!node.classList) continue;
+            // the previous 'if' statement is necessary because the 'classlist'
+            // property doesn't exist, the 'contains' function will cause an error
+             if (node.classList.contains('tree--nested')) {
+               node.classList.add('tree--hidden')
+             }
+          }
+
         }
     });
-    
-    //figure out how we are going to fetch
-    //add logic to add opened class to first div when it has been clicked
-    //add the correct icon to the openned class in CSS
 });
 
